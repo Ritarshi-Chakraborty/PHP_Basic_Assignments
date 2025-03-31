@@ -1,4 +1,4 @@
-<!-- Handling the uploaded image -->
+<!-- Implementing OOP concepts -->
 <?php
     class ImagePath {
         protected $targetFile;
@@ -12,7 +12,6 @@
             return $this->targetFile;
         }
     }
-
     $uploaded_image = new ImagePath("./images/");
     $imageSrc = $uploaded_image->returnPath();
 
@@ -32,6 +31,55 @@
         }
     }
 
+    class validateNumber {
+        protected $mobileRegex = "/^\+91 [6-9][0-9]{9}$/";
+        protected $formattedNumber;
+
+        function __construct($mobileNumber) {
+            $this->formattedNumber = "+91 " . $mobileNumber;
+        }
+
+        function returnNumber() {
+            if(preg_match($this->mobileRegex, $this->formattedNumber))
+            {
+                echo "Mobile Number: ".$this->formattedNumber;
+            }
+            else {
+                echo "This number format is invalid! Please give a 10-digit Indian number";
+            }
+        }
+    }
+    $uploaded_number = new validateNumber($_POST['number']);
+
+    class validateEmail {
+        protected $email;
+        protected $url;
+
+        function __construct($email) {
+            $this->email = $email;
+            $this->url = "http://apilayer.net/api/check?access_key=1e46e7b3020a047eb8b0fd4e522f78c8&email=$email";
+        }
+
+        function returnEmail() {
+            if(filter_var($this->email, FILTER_VALIDATE_EMAIL))
+            {
+                $response = file_get_contents($this->url);
+                $data = json_decode($response, true);
+                
+                if($data["smtp_check"])
+                {
+                    echo "Email ID: " . $this->email;
+                }
+                else {
+                    echo "This email id does not exist.";
+                }
+            }
+            else {
+                echo "Incoorect syntax for Email Id.";
+            }
+        }
+    }
+    $uploaded_email = new validateEmail($_POST['email']);
 ?>
 
 
@@ -47,6 +95,12 @@
     <div class="container">
         <!-- Welcoming the user with his/her name -->
         <h1><?php echo "Hello, ".$_POST['first_name']." ".$_POST['last_name']."!"; ?></h1>
+
+        <!-- Displaying the mobile number -->
+        <h3><?php $uploaded_number->returnNumber(); ?></h3>
+
+        <!-- Displaying the email id -->
+        <h3><?php $uploaded_email->returnEmail(); ?></h3>
         
         <!-- Displaying the uploaded image -->
         <div class="image-wrapper">
@@ -54,7 +108,6 @@
         </div>
        
         <!-- Displaying the subject & marks from textarea in a table format -->
-        
         <table>
             <thead>
                 <tr>
@@ -69,6 +122,8 @@
                 ?>
             </tbody>
         </table>
+
+        
     </div>
 </body>
 </html>
