@@ -65,7 +65,7 @@
 
         function __construct($email) {
             $this->email = $email;
-            // $this->url = "http://apilayer.net/api/check?access_key=1e46e7b3020a047eb8b0fd4e522f78c8&email=$email";
+            $this->url = "http://apilayer.net/api/check?access_key=1e46e7b3020a047eb8b0fd4e522f78c8&email=$email";
         }
 
         function returnEmail() {
