@@ -69,23 +69,21 @@
         }
 
         function returnEmail() {
-            // if(filter_var($this->email, FILTER_VALIDATE_EMAIL))
-            // {
-            //     $response = file_get_contents($this->url);
-            //     $data = json_decode($response, true);
-                
-            //     if($data["smtp_check"] && $data['format_valid'])
-            //     {
-            //         return "Email ID: " . $this->email;
-            //     }
-            //     else {
-            //         return "This email id does not exist.";
-            //     }
-            // }
-            // else {
-            //     return "Incorect syntax for Email Id.";
-            // }
-            return $this->email;
+            $response = file_get_contents($this->url);
+            $data = json_decode($response, true);
+            if($data['format_valid'])
+            {
+                if($data['smtp_check'])
+                {
+                    return $this->email;
+                }
+                else {
+                    return "This email id does not exist";
+                }
+            }
+            else {
+                return "Incorect syntax for Email Id.";
+            }
         }
     }
     $uploaded_email = new validateEmail($_POST['email']);
