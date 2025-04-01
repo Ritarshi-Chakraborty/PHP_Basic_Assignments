@@ -1,5 +1,8 @@
 <!-- Implementing OOP concepts -->
 <?php
+    $fullName = $_POST['first_name']." ".$_POST['last_name'];
+    $result_array = explode("\n", $_POST['result']);
+
     class ImagePath {       
         protected $targetFile;
 
@@ -13,23 +16,28 @@
         }
     }
     $uploaded_image = new ImagePath("./images/");
-    $imageSrc = $uploaded_image->returnPath();
 
-    class displayResult {
+    class DisplayResult {
         protected $table_array;
 
+        function __construct($result_array) {
+            $this->table_array = $result_array;
+        }
+
         function returnResult() {
-            $this->table_array = explode("\n", $_POST['result']);
-            foreach ($this->table_array as $key => $value) {
+            $table = '';
+            foreach ($this->table_array as $value) {
                 $subject = explode('|', $value)[0];
                 $marks = explode('|', $value)[1];
-                echo "<tr>
+                $table.="<tr>
                     <td>$subject</td>
                     <td>$marks</td>
                 </tr>";
             }
+            return $table;
         }
     }
+    $result = new DisplayResult($result_array);
 
     class validateNumber {
         protected $mobileRegex = "/^\+91 [6-9][0-9]{9}$/";
@@ -42,10 +50,10 @@
         function returnNumber() {
             if(preg_match($this->mobileRegex, $this->formattedNumber))
             {
-                echo "Mobile Number: ".$this->formattedNumber;
+                return $this->formattedNumber;
             }
             else {
-                echo "This number format is invalid! Please give a 10-digit Indian number";
+                return "This number format is invalid! Please give a 10-digit Indian number";
             }
         }
     }
@@ -57,31 +65,31 @@
 
         function __construct($email) {
             $this->email = $email;
-            $this->url = "http://apilayer.net/api/check?access_key=1e46e7b3020a047eb8b0fd4e522f78c8&email=$email";
+            // $this->url = "http://apilayer.net/api/check?access_key=1e46e7b3020a047eb8b0fd4e522f78c8&email=$email";
         }
 
         function returnEmail() {
-            if(filter_var($this->email, FILTER_VALIDATE_EMAIL))
-            {
-                $response = file_get_contents($this->url);
-                $data = json_decode($response, true);
+            // if(filter_var($this->email, FILTER_VALIDATE_EMAIL))
+            // {
+            //     $response = file_get_contents($this->url);
+            //     $data = json_decode($response, true);
                 
-                if($data["smtp_check"])
-                {
-                    echo "Email ID: " . $this->email;
-                }
-                else {
-                    echo "This email id does not exist.";
-                }
-            }
-            else {
-                echo "Incoorect syntax for Email Id.";
-            }
+            //     if($data["smtp_check"] && $data['format_valid'])
+            //     {
+            //         return "Email ID: " . $this->email;
+            //     }
+            //     else {
+            //         return "This email id does not exist.";
+            //     }
+            // }
+            // else {
+            //     return "Incorect syntax for Email Id.";
+            // }
+            return $this->email;
         }
     }
     $uploaded_email = new validateEmail($_POST['email']);
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -94,17 +102,17 @@
 <body>
     <div class="container">
         <!-- Welcoming the user with his/her name -->
-        <h1><?php echo "Hello, ".$_POST['first_name']." ".$_POST['last_name']."!"; ?></h1>
+        <h1><?php echo "Hello, ".$fullName."!"; ?></h1>
 
         <!-- Displaying the mobile number -->
-        <h3><?php $uploaded_number->returnNumber(); ?></h3>
+        <h3><?php echo "Mobile Number: ".$uploaded_number->returnNumber(); ?></h3>
 
         <!-- Displaying the email id -->
-        <h3><?php $uploaded_email->returnEmail(); ?></h3>
+        <h3 class="email"><?php echo "Email: ". $uploaded_email->returnEmail(); ?></h3>
         
         <!-- Displaying the uploaded image -->
         <div class="image-wrapper">
-            <img src="<?php echo $imageSrc; ?>" alt="Uploaded Image">
+            <img src="<?php echo $uploaded_image->returnPath(); ?>" alt="Uploaded Image">
         </div>
        
         <!-- Displaying the subject & marks from textarea in a table format -->
@@ -117,13 +125,27 @@
             </thead>
             <tbody>
                 <?php
-                    $result = new displayResult();
-                    $result->returnResult();
+                    echo $result->returnResult();
                 ?>
             </tbody>
         </table>
 
-        
+        <!-- Sending the user details to another php file using SESSIONS -->
+        <?php
+            session_start();
+            $_SESSION['userDetails'] = [
+                'name' => $fullName,
+                'image' => $uploaded_image->returnPath(),
+                'number' => $uploaded_number->returnNumber(),
+                'email' => $uploaded_email->returnEmail(),
+                'result' => $result_array
+            ];
+        ?>
+
+        <!-- Download button -->
+        <div class="btn-wrapper">
+            <a href="./download.php" title="Download your Form">Download your Form</a>
+        </div>
     </div>
 </body>
 </html>
