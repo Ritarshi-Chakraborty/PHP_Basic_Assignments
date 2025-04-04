@@ -3,27 +3,33 @@
     $fullName = $_POST['first_name']." ".$_POST['last_name'];
     $result_array = explode("\n", $_POST['result']);
 
+    // Class to handle the uploading and storing of an image
     class ImagePath {       
         protected $targetFile;
 
+        // Constructor that handles the file upload
         function __construct($targetDir) {
             $this->targetFile = $targetDir . basename($_FILES["image"]["name"]);
             move_uploaded_file($_FILES["image"]["tmp_name"], $this->targetFile);
         }
 
+        // Method to return the path of the uploaded image
         function returnPath() {
             return $this->targetFile;
         }
     }
     $uploaded_image = new ImagePath("./images/");
 
+    // Class to process and display the result data as a table
     class DisplayResult {
         protected $table_array;
 
+        // Constructor that initializes the result array
         function __construct($result_array) {
             $this->table_array = $result_array;
         }
 
+        // Method to format and return the result data as an HTML table
         function returnResult() {
             $table = '';
             foreach ($this->table_array as $value) {
@@ -39,17 +45,19 @@
     }
     $result = new DisplayResult($result_array);
 
+    // Class to validate mobile number format
     class validateNumber {
         protected $mobileRegex = "/^\+91 [6-9][0-9]{9}$/";
         protected $formattedNumber;
 
+        // Constructor that initializes the formatted mobile number
         function __construct($mobileNumber) {
             $this->formattedNumber = "+91 " . $mobileNumber;
         }
 
+        // Method to validate and return the mobile number if valid
         function returnNumber() {
-            if(preg_match($this->mobileRegex, $this->formattedNumber))
-            {
+            if(preg_match($this->mobileRegex, $this->formattedNumber)) {
                 return $this->formattedNumber;
             }
             else {
@@ -59,26 +67,27 @@
     }
     $uploaded_number = new validateNumber($_POST['number']);
 
+    // Class to validate the email format and check if it exists
     class validateEmail {
         protected $email;
         protected $url;
 
+        // Constructor that initializes the email and the api url
         function __construct($email) {
             $this->email = $email;
             $this->url = "http://apilayer.net/api/check?access_key=1e46e7b3020a047eb8b0fd4e522f78c8&email=$email";
         }
 
+        // Method to validate and return the email address
         function returnEmail() {
             $response = file_get_contents($this->url);
             $data = json_decode($response, true);
-            if($data['format_valid'])
-            {
-                if($data['smtp_check'])
-                {
+            if($data['format_valid']) {
+                if($data['smtp_check']) {
                     return $this->email;
                 }
                 else {
-                    return "This email id does not exist";
+                    return "This email id does not exist.";
                 }
             }
             else {
