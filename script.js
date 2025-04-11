@@ -1,8 +1,20 @@
 $(document).ready(function () {
-    // Handling the login page
+    /**
+     * Handle the login form behavior including input validation.
+     *
+     * This function listens for input events on the username and password fields.
+     * It clears the validation messages when the user starts typing and validates
+     * the form on submission.
+     */
     function handleLoginForm() {
+        /**
+         * Event listener for input fields to hide the validation messages
+         * when the user starts typing.
+         */
         $('input[name="username"], input[name="password"]').on('input', function () {
-            // Hide the message once the user starts typing
+            /**
+             * Hide the message once the user starts typing
+             */
             let fieldName = $(this).attr('name');
             if (fieldName === 'username') {
                 if ($(this).val().trim()) {
@@ -16,7 +28,12 @@ $(document).ready(function () {
             }
         });
 
-
+        /**
+         * Event listener for form submission.
+         * Validates the username and password fields before allowing form submission.
+         * 
+         * @param {Event} event The form submit event
+         */
         $('form').on('submit', function (event) {
             let first_name = $('input[name="username"]').val().trim();
             let last_name = $('input[name="password"]').val().trim();
@@ -36,26 +53,39 @@ $(document).ready(function () {
             } else {
                 $('.password-message').hide();
             }
-
+            /**
+             * Prevent form submission if fields are invalid
+             */
             if (!valid) {
-                // Stop form submission
                 event.preventDefault(); 
             }
         });
     }
 
-    // Retrieve the dimensions of the image
+    /**
+     * Calculate and set the dimensions of the image wrapper based on a desired width
+     * while maintaining the aspect ratio.
+     *
+     * The desired width is 40rem (which equals 640px), and the height is adjusted
+     * accordingly based on the original aspect ratio.
+     */
     function getImageDimensions() {
-        // 1rem = 16px therefore 40rem = (40*16)px
-        let desiredWidth = 40*16;
+        /**
+         * 1rem = 16px, therefore 40rem = 640px
+         */
+        let desiredWidth = 40 * 16;
         let imgWidth = $('.image-wrapper').data('width');
         let imgHeight = $('.image-wrapper').data('height');
 
-        // Calculate aspect ratio height based on desired width
+        /**
+         * Calculate aspect ratio height based on desired width
+         */
         let aspectHeight = Math.round((desiredWidth / imgWidth) * imgHeight);
         console.log(aspectHeight);
 
-        // Assigning the desired dimensions to the image wrapper
+        /**
+         * Assigning the calculated dimensions to the image wrapper
+         */
         $('.image-wrapper').css({
             'width': desiredWidth,
             'height': aspectHeight
@@ -64,4 +94,4 @@ $(document).ready(function () {
 
     handleLoginForm();
     getImageDimensions();
-})
+});

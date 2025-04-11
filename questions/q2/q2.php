@@ -1,33 +1,55 @@
 <?php
     session_start();
+
+    /**
+     * Redirect to the login page if the user is not logged in.
+     */
     if (!$_SESSION['loggedIn']) {
         header("location: ../../login.php");
     }
 
-    if($_SERVER['REQUEST_METHOD'] == 'POST') {
-        // Class to structure the Image src & move the file to the target directory
+    /**
+     * Handle image upload and store the uploaded file in a specific directory.
+     */
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        
+        /**
+         * Class to handle the image upload and return the file path.
+         * This class moves the uploaded file to a target directory and stores the path.
+         */
         class ImagePath {       
+            /**
+             * @var string $targetFile Path where the uploaded file will be stored
+             */
             protected $targetFile;
 
-            // Constructor that handles the file upload
+            /**
+             * Constructor that handles the file upload process
+             *
+             * @param string $targetDir The directory where the uploaded image will be saved
+             * @param array $userImg The $_FILES array containing the uploaded image data
+             */
             function __construct($targetDir, $userImg) {
                 $this->targetFile = $targetDir . basename($userImg["name"]);
                 move_uploaded_file($userImg["tmp_name"], $this->targetFile);
             }
 
-            // Method to return the path of the uploaded image
+            /**
+             * Method to return the path of the uploaded image
+             *
+             * @return string The file path of the uploaded image
+             */
             function returnPath() {
                 return $this->targetFile;
             }
         }
-        $uploaded_image = new ImagePath("/var/www/Login_System/images/", $_FILES['image']);
 
-        // Storing the image src in the session variable
+        $uploaded_image = new ImagePath("/var/www/Login_System/images/", $_FILES['image']);
         $_SESSION['userDetails']['image'] = $uploaded_image->returnPath();
         header("location: ../../navigation.php?q=3");
     }
-
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

@@ -1,15 +1,26 @@
 <?php
     session_start();
+
+    /**
+     * Check if the user is logged in. If not, redirect to the login page.
+     * 
+     * @return void
+     */
     if (!$_SESSION['loggedIn']) {
         header("location: ./login.php");
     }
 
+    /**
+     * Check if the 'q' parameter is present in the URL and redirect the user accordingly.
+     * Redirects to different question pages based on the value of the 'q' parameter.
+     * If 'q' is not set or has an invalid value, redirects to the default question page (q4).
+     * 
+     * @return void
+     */
     if (isset($_GET['q'])) {
-        // Get the value of the 'q' parameter
         $q = $_GET['q'];
     
-        // Redirect based on the value of 'q'
-        if($q == 1) {
+        if ($q == 1) {
             header("Location: ./questions/q1/q1.php");
             exit();
         }
@@ -29,13 +40,12 @@
             header("Location: ./questions/q5/q5.php");
             exit();
         }
-        // If 'q' value is something else, redirect to q4.php by default
         else {
             header("Location: ./questions/q4/q4.php");
             exit();
         }
-    } else {
-        // If 'q' is not set, redirect to q4.php by default
+    } 
+    else {
         header("Location: ./questions/q4/q4.php");
         exit();
     }
