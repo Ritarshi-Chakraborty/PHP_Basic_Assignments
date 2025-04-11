@@ -1,112 +1,83 @@
-$(document).ready(function () {
+$(document).ready(function() {
     /**
-     * Handle the login form behavior including input validation.
-     *
-     * This function listens for input events on the username and password fields.
-     * It clears the validation messages when the user starts typing and validates
-     * the form on submission.
+     * Handles the concatenation of the first name and last name
+     * and updates the full_name input field.
      */
-    function handleLoginForm() {
+    function handleFullName() {
+        let fullName = $('input[name="first_name"]').val() + " " + $('input[name="last_name"]').val();
+        $('input[name="full_name"]').val(fullName);
+    }
+
+    /**
+     * Validates the input fields for first name and last name.
+     * - Filters out non-alphabetical characters.
+     * - Shows/hides validation messages depending on whether the fields are empty or not.
+     * - Prevents form submission if the fields are empty.
+     */
+    function validateInputs() {
         /**
-         * Event listener for input fields to hide the validation messages
-         * when the user starts typing.
-         * 
-         * @param {Event} event The input event triggered on the form fields
+         * Handles input event for first name and last name fields.
+         * Ensures that only alphabetical characters and spaces are allowed.
+         * Updates the full name field and manages validation messages.
          */
-        $('input[name="username"], input[name="password"]').on('input', function () {
+        $('input[name="first_name"], input[name="last_name"]').on('input', function () {
+            let inputValue = $(this).val();
+            let validInput = inputValue.replace(/[^a-zA-Z\s]/g, '');
+            $(this).val(validInput);
+
+            handleFullName();
+
             let fieldName = $(this).attr('name');
-            
-            /**
-             * When the username field is being edited and the input is not empty, remove the validation message
-             */
-            if (fieldName === 'username') {
-                if ($(this).val().trim()) {
-                    $('.username-message').text('').removeClass('show-message');
-                }
-            } 
-            /**
-             * When the password field is being edited and the input is not empty, remove the validation message
-             */
-            else if (fieldName === 'password') {
-                if ($(this).val().trim()) {
-                    $('.password-message').text('').removeClass('show-message');
-                }
+            if (fieldName === 'first_name') {
+                $('.firstname-message').toggle(!$(this).val().trim());
+            } else if (fieldName === 'last_name') {
+                $('.lastname-message').toggle(!$(this).val().trim());
             }
         });
 
         /**
-         * Event listener for form submission.
-         * Validates the username and password fields before allowing form submission.
+         * Handles paste event to prevent pasting non-alphabetical characters into the first name and last name fields.
          * 
-         * @param {Event} event The form submit event
+         * @param {Event} event The paste event triggered by the user.
+         */
+        $('input[name="first_name"], input[name="last_name"]').on('paste', function (event) {
+            let pastedData = event.originalEvent.clipboardData.getData('text');
+            if (!/^[a-zA-Z\s]+$/.test(pastedData)) {
+                event.preventDefault();
+            }
+        });
+
+        /**
+         * Validates the form upon submission. If any required fields are empty, it prevents form submission 
+         * and shows the appropriate validation messages.
+         * 
+         * @param {Event} event The submit event triggered when the form is submitted.
          */
         $('form').on('submit', function (event) {
-            let first_name = $('input[name="username"]').val().trim();
-            let last_name = $('input[name="password"]').val().trim();
+            let first_name = $('input[name="first_name"]').val().trim();
+            let last_name = $('input[name="last_name"]').val().trim();
+
             let valid = true;
 
-            /**
-             * If the username field is empty, display a validation message
-             */
             if (!first_name) {
-                $('.username-message').text('This field is required.').addClass('show-message');
+                $('.firstname-message').show();
                 valid = false;
             } else {
-                $('.username-message').hide();
+                $('.firstname-message').hide();
             }
 
-            /**
-             * If the password field is empty, display a validation message
-             */
             if (!last_name) {
-                $('.password-message').text('This field is required.').addClass('show-message');
+                $('.lastname-message').show();
                 valid = false;
             } else {
-                $('.password-message').hide();
+                $('.lastname-message').hide();
             }
 
-            /**
-             * If any field is invalid, prevent form submission
-             */
             if (!valid) {
-                event.preventDefault(); 
+                event.preventDefault();
             }
         });
     }
 
-    /**
-     * Calculate and set the dimensions of the image wrapper based on a desired width
-     * while maintaining the aspect ratio.
-     *
-     * The desired width is 40rem (which equals 640px), and the height is adjusted
-     * accordingly based on the original aspect ratio.
-     */
-    function getImageDimensions() {
-        /**
-         * 1rem = 16px, therefore 40rem = 640px
-         */
-        let desiredWidth = 40 * 16;
-        let imgWidth = $('.image-wrapper').data('width');
-        let imgHeight = $('.image-wrapper').data('height');
-
-        /**
-         * Calculate the aspect ratio height based on the desired width.
-         * 
-         * The aspect ratio height is calculated using the formula:
-         * aspectHeight = (desiredWidth / imgWidth) * imgHeight
-         */
-        let aspectHeight = Math.round((desiredWidth / imgWidth) * imgHeight);
-        console.log(aspectHeight);
-
-        /**
-         * Assign the desired width and calculated height to the image wrapper
-         */
-        $('.image-wrapper').css({
-            'width': desiredWidth,
-            'height': aspectHeight
-        })
-    }
-
-    handleLoginForm();
-    getImageDimensions();
-});
+    validateInputs();
+})
