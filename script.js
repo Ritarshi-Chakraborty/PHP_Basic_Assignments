@@ -1,5 +1,24 @@
 $(document).ready(function () {
     /**
+     * Check if the email has been sent by reading the hidden div's value
+     */
+    let emailSent = $('#emailSentFlag').text();
+    /**
+     * Display the sweet alert if the email has been sent
+     */
+    if (emailSent === 'true') {
+        Swal.fire({
+            title: "Email sent!",
+            text: "Thank you for sharing your details.",
+            icon: "success",
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            allowEnterKey: true,
+            backdrop: true
+        });
+    }
+
+    /**
      * Handle the login form behavior including input validation.
      *
      * This function listens for input events on the username and password fields.

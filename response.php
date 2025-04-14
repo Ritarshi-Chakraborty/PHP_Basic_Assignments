@@ -7,25 +7,15 @@
     if (!$_SESSION['loggedIn']) {
         header("location: ./login.php");
     }
+    require ('vendor/autoload.php');
+    use PHPMailer\PHPMailer\PHPMailer;
+    use PHPMailer\PHPMailer\Exception;
+    use PHPMailer\PHPMailer\SMTP;
+
     /**
      * Retrieve the user details from the session.
-     * User details are stored in the session variable 'userDetails'.
      */
     $userDetails = $_SESSION['userDetails'];
-    /**
-     * Build the path to the user's uploaded image.
-     * Uses the basename function to avoid directory traversal vulnerabilities.
-     */
-    $imagePath = './images/' . basename($userDetails['image']);
-    /**
-     * Retrieve the size of the image (width, height, type, and attributes).
-     * The getimagesize function returns an array with this information.
-     *
-     * @var array $imageSize Array containing width, height, type, and attributes of the image.
-     */
-    $imageSize = getimagesize($imagePath); 
-    $imageWidth = $imageSize[0];
-    $imageHeight = $imageSize[1];
 
     /**
      * Class to format and display user results as an HTML table.
@@ -75,8 +65,80 @@
             return $table;
         }
     }
-
     $result = new DisplayResult($userDetails['result']);
+
+    /**
+     * Sending a mail to the submitted email address if the Session variable exists
+     */
+    if(isset($_SESSION['email_sent']) && $_SESSION['email_sent']) {
+        $mail = new PHPMailer();
+        try {
+            /**
+             * Server settings
+             */
+            $mail->isSMTP();
+            $mail->Host       = 'smtp.gmail.com';
+            $mail->SMTPAuth   = true;
+            $mail->Username   = 'ritarshi.chakraborty@innoraft.com';
+            $mail->Password   = 'zxuu npaw ggft hnyf';
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+            $mail->Port       = 465;
+            /**
+             * Recipients
+             */
+            $mail->setFrom('ritarshi.chakraborty@innoraft.com', 'Ritam');
+            $mail->addAddress($userDetails['email']);
+            /**
+             * Content
+             */
+            $mail->isHTML(true);
+            $mail->Subject = 'Response for submitting the form';
+            $mail->Body = "<h2>Thank you for connecting with us!</h2>
+            <h3>Name : {$userDetails['name']}</h3>
+            <h3>Phone Number : {$userDetails['number']}</h3>
+            <h3>Your Result : </h3>
+            <table>
+                <tr>
+                    <th>Subject</th>
+                    <th>Marks</th>
+                </tr>".$result->returnResult()."</table>";
+            /**
+             * Attachment
+             */
+            $mail->addAttachment(''.$userDetails['image'].'');
+            /**
+             * Send the mail
+             */
+            $mail->send();
+            /**
+             * Set a session flag to indicate the email was sent successfully
+             */
+            $_SESSION['email_sent_success'] = true;
+            /**
+             * Unset the flag after email is sent to avoid re-sending
+             */
+            unset($_SESSION['email_sent']);
+        }
+        catch (Exception $e) {
+
+        }
+    }
+    
+    /**
+     * Build the path to the user's uploaded image.
+     * Uses the basename function to avoid directory traversal vulnerabilities.
+     */
+    $imagePath = './images/' . basename($userDetails['image']);
+    /**
+     * Retrieve the size of the image (width, height, type, and attributes).
+     * The getimagesize function returns an array with this information.
+     *
+     * @var array $imageSize Array containing width, height, type, and attributes of the image.
+     */
+    $imageSize = getimagesize($imagePath); 
+    $imageWidth = $imageSize[0];
+    $imageHeight = $imageSize[1];
+
 ?>
 
 <!DOCTYPE html>
@@ -88,6 +150,7 @@
     <link rel="stylesheet" href="./style.css">
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="./script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <div class="container">
@@ -110,6 +173,15 @@
             <a href="./download.php" title="Download">Download your Data</a>
             <a href="../logout.php" title="Logout">Logout</a>
         </div>
+        <!-- Hidden element to signal to JS that the email has been sent -->
+        <div id="emailSentFlag"><?php echo isset($_SESSION['email_sent_success']) && $_SESSION['email_sent_success'] ? 'true' : 'false'; ?></div>
+
+        <?php
+            /**
+             * Clear session flag after setting it to avoid re-triggering the alert on page reload
+             */
+            unset($_SESSION['email_sent_success']);
+        ?>
     </div>
 </body>
 </html>

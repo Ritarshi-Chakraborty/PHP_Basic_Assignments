@@ -175,3 +175,8 @@ table, th, td
     color: white;
     transition: all .2s ease;
 }
+
+#emailSentFlag
+{
+    display: none;
+}

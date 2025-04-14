@@ -29,9 +29,9 @@ $(document).ready(function() {
 
             let fieldName = $(this).attr('name');
             if (fieldName === 'first_name') {
-                $('.firstname-message').toggle(!$(this).val().trim());
+                $('.firstname-message').hide(!$(this).val().trim());
             } else if (fieldName === 'last_name') {
-                $('.lastname-message').toggle(!$(this).val().trim());
+                $('.lastname-message').hide(!$(this).val().trim());
             }
         });
 
