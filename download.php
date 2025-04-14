@@ -12,7 +12,19 @@
      * and the results table. It also handles displaying the user image in the PDF.
      */
     class UserData {
+        /**
+         * @var FPDF $pdf PDF instance used for creating and generating the PDF document
+         */
         protected $pdf;
+        /**
+         * @var array $data Associative array containing user details including name, number, email, and result.
+         * The expected keys are:
+         * - 'name' => User's full name
+         * - 'number' => User's phone number
+         * - 'email' => User's email address
+         * - 'image' => Path to the user's image file
+         * - 'result' => Array of strings in the format 'subject|marks' representing the user's results
+         */
         protected $data;
 
         /**

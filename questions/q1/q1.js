@@ -1,5 +1,16 @@
 $(document).ready(function() {
     /**
+     * Debounce function to cause a delay effect
+     */
+    function debounce(func, delay) {
+        let timer;
+        return function (...args) {
+            clearTimeout(timer);
+            timer = setTimeout(() => func.apply(this, args), delay);
+        };
+    }
+    
+    /**
      * Handles the concatenation of the first name and last name
      * and updates the full_name input field.
      */
@@ -20,7 +31,7 @@ $(document).ready(function() {
          * Ensures that only alphabetical characters and spaces are allowed.
          * Updates the full name field and manages validation messages.
          */
-        $('input[name="first_name"], input[name="last_name"]').on('input', function () {
+        $('input[name="first_name"], input[name="last_name"]').on('input', debounce(function () {
             let inputValue = $(this).val();
             let validInput = inputValue.replace(/[^a-zA-Z\s]/g, '');
             $(this).val(validInput);
@@ -33,19 +44,19 @@ $(document).ready(function() {
             } else if (fieldName === 'last_name') {
                 $('.lastname-message').hide(!$(this).val().trim());
             }
-        });
+        }, 300));
 
         /**
          * Handles paste event to prevent pasting non-alphabetical characters into the first name and last name fields.
          * 
          * @param {Event} event The paste event triggered by the user.
          */
-        $('input[name="first_name"], input[name="last_name"]').on('paste', function (event) {
+        $('input[name="first_name"], input[name="last_name"]').on('paste', debounce(function (event) {
             let pastedData = event.originalEvent.clipboardData.getData('text');
             if (!/^[a-zA-Z\s]+$/.test(pastedData)) {
                 event.preventDefault();
             }
-        });
+        }, 300));
 
         /**
          * Validates the form upon submission. If any required fields are empty, it prevents form submission 
@@ -53,7 +64,7 @@ $(document).ready(function() {
          * 
          * @param {Event} event The submit event triggered when the form is submitted.
          */
-        $('form').on('submit', function (event) {
+        $('#name-form').on('submit', function (event) {
             let first_name = $('input[name="first_name"]').val().trim();
             let last_name = $('input[name="last_name"]').val().trim();
 

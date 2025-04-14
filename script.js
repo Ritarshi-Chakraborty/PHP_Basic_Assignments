@@ -53,7 +53,7 @@ $(document).ready(function () {
          * 
          * @param {Event} event The form submit event
          */
-        $('form').on('submit', function (event) {
+        $('#login-form').on('submit', function (event) {
             let first_name = $('input[name="username"]').val().trim();
             let last_name = $('input[name="password"]').val().trim();
 

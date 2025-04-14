@@ -1,8 +1,17 @@
 <?php
     session_start();
+    // Include the dotenv library
+    require_once __DIR__ . '/vendor/autoload.php';
+
+    // Load the .env file
+    $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+    $dotenv->load();
+
+    // Empty error message
     $usernameError = "";
     $passwordError = "";
 
+    // Check for errors in session
     if(isset($_SESSION['username-error'])) {
         $usernameError = $_SESSION['username-error'];
         unset($_SESSION['username-error']);
@@ -13,16 +22,17 @@
         unset($_SESSION['password-error']);
     }
 
+    // Check if form is submitted
     if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $username = $_POST['username'];
         $password = $_POST['password'];
     
-        if ($username !== 'Ritam') {
+        if ($username !== $_ENV['USERNAME']) {
             $_SESSION['username-error'] = "User not found.";
             header("Location: ".$_SERVER['PHP_SELF']);
             exit();
         } 
-        elseif ($password !== 'Warner31') {
+        elseif ($password !== $_ENV['PASSWORD']) {
             $_SESSION['password-error'] = "Incorrect password.";
             header("Location: ".$_SERVER['PHP_SELF']);
             exit();
@@ -47,7 +57,7 @@
 </head>
 <body>
     <div class="container">
-        <form action="" method="post">
+        <form action="" method="post" id="login-form">
             <h1>Login!</h1>
             <label>Enter your Username<span>*</span></label>
             <input type="text" name="username">

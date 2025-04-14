@@ -15,7 +15,6 @@ $(document).ready(function() {
          * @returns {boolean} - Returns true if the number matches the pattern, false otherwise.
          */
         function checkNumber(number) {
-            console.log(/^[6-9]\d{9}$/.test(number));
             return /^[6-9]\d{9}$/.test(number);
         }
 
@@ -33,7 +32,6 @@ $(document).ready(function() {
 
         /**
          * Event listener for the 'paste' event to handle when the user pastes something into the input field.
-         * 
          * It removes non-numeric characters and ensures the number length doesn't exceed 10 digits.
          * Also hides the error message when pasting.
          */
@@ -50,7 +48,7 @@ $(document).ready(function() {
          * 
          * @param {Event} e - The form submission event.
          */
-        $('form').on('submit', function(e) {
+        $('#number-form').on('submit', function(e) {
             let number = input.val();
             if (!checkNumber(number)) {
                 e.preventDefault();

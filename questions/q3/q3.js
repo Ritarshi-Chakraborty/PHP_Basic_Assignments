@@ -46,7 +46,7 @@ $(document).ready(function() {
          * Event listener for form submission to validate the input.
          * It checks for empty input, correct format, and marks within valid range.
          */
-        $('form').on('submit', function(e) {
+        $('#result-form').on('submit', function(e) {
             let isValid = true;
             let value = $('textarea').val();
 

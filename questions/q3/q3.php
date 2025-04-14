@@ -22,7 +22,7 @@
 </head>
 <body>
     <div class="container">
-        <form action="" method="post" enctype="multipart/form-data">
+        <form action="" method="post" id="result-form" enctype="multipart/form-data">
             <h1>Assignment 3</h1>
             <label>Enter your Subjects and Marks<span>*</span></label>
             <textarea placeholder="Please use the following format: English|80" name="result"></textarea>

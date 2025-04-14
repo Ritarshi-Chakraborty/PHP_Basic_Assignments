@@ -18,7 +18,7 @@ $(document).ready(function() {
          * 
          * @param {Event} e The form submit event
          */
-        $('form').on('submit', function (e) {
+        $('#image-form').on('submit', function (e) {
             let file = fileInput.files[0];
 
             /**

@@ -24,7 +24,7 @@
 </head>
 <body>
     <div class="container">
-        <form action="" method="post" enctype="multipart/form-data">
+        <form action="" method="post" id="number-form" enctype="multipart/form-data">
             <h1>Assignment 4</h1>
             <label>Enter your mobile number<span>*</span></label>
             <input type="text" name="number">

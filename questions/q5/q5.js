@@ -11,7 +11,7 @@ $(document).ready(function() {
          * 
          * @param {Event} e The form submit event.
          */
-        $("form").on("submit", function(e) {
+        $("#email-form").on("submit", function(e) {
             let email = $("input[name='email']").val().trim();
     
             if (email === "") {

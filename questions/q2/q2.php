@@ -63,7 +63,7 @@
 </head>
 <body>
     <div class="container">
-        <form action="" method="post" enctype="multipart/form-data">
+        <form action="" method="post" id="image-form" enctype="multipart/form-data">
             <h1>Assignment 2</h1>
             <label>Upload an Image<span>*</span></label>
             <input class="picture-input" type="file" name="image" accept="image/*">

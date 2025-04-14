@@ -7,6 +7,14 @@
     if (!$_SESSION['loggedIn']) {
         header("location: ../../login.php");
     }
+
+    // Include the dotenv library
+    require_once __DIR__ . '/../../vendor/autoload.php';
+
+    // Load the .env file
+    $dotenv = Dotenv\Dotenv::createImmutable(__DIR__. '/../../');
+    $dotenv->load();
+
     /**
      * Checks if there was a previous email error stored in the session.
      * If an error is present, it stores the error message in $emailStatus and unsets the session variable.
@@ -40,7 +48,7 @@
             /**
              * @var string $api_key The API key to access the validation service.
              */
-            protected $api_key = "1e46e7b3020a047eb8b0fd4e522f78c8";
+            protected $api_key;
 
             /**
              * Constructor to initialize the email and prepare the API request URL.
@@ -52,7 +60,8 @@
                  * Sets the email and constructs the URL for the API request.
                  */
                 $this->email = $email;
-                $this->url = "http://apilayer.net/api/check?access_key=$this->api_key&email=$email";
+                $this->api_key = $_ENV['APIKEY'];
+                // $this->url = "http://apilayer.net/api/check?access_key=$this->api_key&email=$email";
             }
 
             /**
@@ -66,42 +75,46 @@
                 /**
                  * Sends a request to the API and checks the response for email validity.
                  */
-                $response = file_get_contents($this->url);
-                $data = json_decode($response, true);
+                // $response = file_get_contents($this->url);
+                // $data = json_decode($response, true);
 
-                /**
-                 * If the email format is valid, proceed to check the existence of the email.
-                 */
-                if ($data['format_valid']) {
-                    /**
-                     * If SMTP check is successful, store the email in the session and redirect to the response page.
-                     */
-                    if ($data['smtp_check']) {
-                        $_SESSION['userDetails']['email'] = $_POST['email'];
-                        /**
-                         * Set the flag to indicate that the email has been validated and the form is submitted
-                         */
-                        $_SESSION['email_sent'] = true;
-                        header("Location: ../../response.php");
-                        exit;
-                    } 
-                    else {
-                        /**
-                         * If the email does not exist, set an error message and redirect back to the form.
-                         */
-                        $_SESSION['email_error'] = "This email id does not exist.";
-                        header("Location: ".$_SERVER['PHP_SELF']);
-                        exit;
-                    }
-                } 
-                else {
-                    /**
-                     * If the email format is invalid, set an error message and redirect back to the form.
-                     */
-                    $_SESSION['email_error'] = "Incorrect syntax for Email Id."; 
-                    header("Location: ".$_SERVER['PHP_SELF']);
-                    exit;   
-                }
+                // /**
+                //  * If the email format is valid, proceed to check the existence of the email.
+                //  */
+                // if ($data['format_valid']) {
+                //     /**
+                //      * If SMTP check is successful, store the email in the session and redirect to the response page.
+                //      */
+                //     if ($data['smtp_check']) {
+                //         $_SESSION['userDetails']['email'] = $_POST['email'];
+                //         /**
+                //          * Set the flag to indicate that the email has been validated and the form is submitted
+                //          */
+                //         $_SESSION['email_sent'] = true;
+                //         header("Location: ../../response.php");
+                //         exit;
+                //     } 
+                //     else {
+                //         /**
+                //          * If the email does not exist, set an error message and redirect back to the form.
+                //          */
+                //         $_SESSION['email_error'] = "This email id does not exist.";
+                //         header("Location: ".$_SERVER['PHP_SELF']);
+                //         exit;
+                //     }
+                // } 
+                // else {
+                //     /**
+                //      * If the email format is invalid, set an error message and redirect back to the form.
+                //      */
+                //     $_SESSION['email_error'] = "Incorrect syntax for Email Id."; 
+                //     header("Location: ".$_SERVER['PHP_SELF']);
+                //     exit;   
+                // }
+                $_SESSION['userDetails']['email'] = $_POST['email'];
+                $_SESSION['email_sent'] = true;
+                header("Location: ../../response.php");
+                exit;
             }
         }
 
@@ -123,7 +136,7 @@
 </head>
 <body>
     <div class="container">
-        <form action="" method="post" enctype="multipart/form-data">
+        <form action="" method="post" id="email-form" enctype="multipart/form-data">
             <h1>Assignment 5</h1>
             <label>Enter your Email Id<span>*</span></label>
             <input type="text" name="email">
