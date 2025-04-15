@@ -1,15 +1,23 @@
 $(document).ready(function() {
     /**
-     * Debounce function to cause a delay effect
+     * Custom debounce function to delay the execution of a function until after
+     * a specified delay time has passed since the last time the function was called.
+     *
+     * @param {function} func The function to be debounced.
+     * @param {number} delay The delay time in milliseconds.
+     * @returns {function} A debounced version of the given function.
      */
     function debounce(func, delay) {
-        let timer;
-        return function (...args) {
-            clearTimeout(timer);
-            timer = setTimeout(() => func.apply(this, args), delay);
+        let timeout;
+
+        return function(...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                func.apply(this, args);
+            }, delay);
         };
     }
-    
+
     /**
      * Handles the concatenation of the first name and last name
      * and updates the full_name input field.

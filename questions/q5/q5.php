@@ -61,7 +61,7 @@
                  */
                 $this->email = $email;
                 $this->api_key = $_ENV['APIKEY'];
-                // $this->url = "http://apilayer.net/api/check?access_key=$this->api_key&email=$email";
+                $this->url = "http://apilayer.net/api/check?access_key=$this->api_key&email=$email";
             }
 
             /**
@@ -75,46 +75,42 @@
                 /**
                  * Sends a request to the API and checks the response for email validity.
                  */
-                // $response = file_get_contents($this->url);
-                // $data = json_decode($response, true);
+                $response = file_get_contents($this->url);
+                $data = json_decode($response, true);
 
-                // /**
-                //  * If the email format is valid, proceed to check the existence of the email.
-                //  */
-                // if ($data['format_valid']) {
-                //     /**
-                //      * If SMTP check is successful, store the email in the session and redirect to the response page.
-                //      */
-                //     if ($data['smtp_check']) {
-                //         $_SESSION['userDetails']['email'] = $_POST['email'];
-                //         /**
-                //          * Set the flag to indicate that the email has been validated and the form is submitted
-                //          */
-                //         $_SESSION['email_sent'] = true;
-                //         header("Location: ../../response.php");
-                //         exit;
-                //     } 
-                //     else {
-                //         /**
-                //          * If the email does not exist, set an error message and redirect back to the form.
-                //          */
-                //         $_SESSION['email_error'] = "This email id does not exist.";
-                //         header("Location: ".$_SERVER['PHP_SELF']);
-                //         exit;
-                //     }
-                // } 
-                // else {
-                //     /**
-                //      * If the email format is invalid, set an error message and redirect back to the form.
-                //      */
-                //     $_SESSION['email_error'] = "Incorrect syntax for Email Id."; 
-                //     header("Location: ".$_SERVER['PHP_SELF']);
-                //     exit;   
-                // }
-                $_SESSION['userDetails']['email'] = $_POST['email'];
-                $_SESSION['email_sent'] = true;
-                header("Location: ../../response.php");
-                exit;
+                /**
+                 * If the email format is valid, proceed to check the existence of the email.
+                 */
+                if ($data['format_valid']) {
+                    /**
+                     * If SMTP check is successful, store the email in the session and redirect to the response page.
+                     */
+                    if ($data['smtp_check']) {
+                        $_SESSION['userDetails']['email'] = $_POST['email'];
+                        /**
+                         * Set the flag to indicate that the email has been validated and the form is submitted
+                         */
+                        $_SESSION['email_sent'] = true;
+                        header("Location: ../../response.php");
+                        exit;
+                    } 
+                    else {
+                        /**
+                         * If the email does not exist, set an error message and redirect back to the form.
+                         */
+                        $_SESSION['email_error'] = "This email id does not exist.";
+                        header("Location: ".$_SERVER['PHP_SELF']);
+                        exit;
+                    }
+                } 
+                else {
+                    /**
+                     * If the email format is invalid, set an error message and redirect back to the form.
+                     */
+                    $_SESSION['email_error'] = "Incorrect syntax for Email Id."; 
+                    header("Location: ".$_SERVER['PHP_SELF']);
+                    exit;   
+                }
             }
         }
 

@@ -18,8 +18,8 @@
     <title>Question 1</title>
     <link rel="stylesheet" href="../../style.css">
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-throttle-debounce@1.1/jquery.ba-throttle-debounce.min.js"></script>
     <script src="./q1.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
 </head>
 <body>
     <div class="container">
